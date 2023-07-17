@@ -4,9 +4,12 @@
 use core::sync::atomic::{AtomicUsize, Ordering};
 use defmt_brtt as _; // global logger
 use panic_probe as _;
-use stm32_hal2 as _;
 
+pub use stm32f4xx_hal as hal;
+
+pub mod register;
 pub mod imu;
+pub mod types;
 
 // same panicking *behavior* as `panic-probe` but doesn't print a panic message
 // this prevents the panic message being printed *twice* when `defmt::panic` is invoked
