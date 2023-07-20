@@ -80,7 +80,6 @@ pub mod registers {
     use bitvec::prelude::*;
     use byteorder::{BigEndian, ByteOrder};
     use defmt::Format;
-    use enumflags2::{bitflags, BitFlags};
 
     #[derive(Debug, Format, Copy, Clone, PartialEq)]
     pub struct WhoAmI(u8);

@@ -31,7 +31,6 @@ mod app {
     #[init]
     fn init(_cx: init::Context) -> (Shared, Local) {
         defmt::info!("Initializing");
-
         // let mut dp = pac::Peripherals::take().unwrap();
         let mut dp = unsafe { pac::Peripherals::steal() };
         let mut syscfg = dp.SYSCFG.constrain();
@@ -52,15 +51,11 @@ mod app {
         let mut led_pin = gpioa.pa5.into_push_pull_output();
         led_pin.set_high();
 
-        // imu_interrupt.enable_interrupt(Edge::Rising);
-
         let mut button_pin = gpioc.pc13.into_input();
         button_pin.set_internal_resistor(Pull::Up);
         button_pin.make_interrupt_source(&mut syscfg);
         button_pin.trigger_on_edge(&mut dp.EXTI, Edge::Falling);
         button_pin.enable_interrupt(&mut dp.EXTI);
-
-        defmt::info!("Default button_state.is_high: {}", button_pin.is_high());
 
         defmt::info!("Configuring imu");
         let i2c1 = I2c::new(dp.I2C1, (gpiob.pb8, gpiob.pb9), 100.kHz(), &clocks);
@@ -90,6 +85,7 @@ mod app {
 
         let accl = cx.local.imu.acceleration_raw();
         defmt::info!("accl: x: {:?}, y: {:?}, z: {:?}", accl.x, accl.y, accl.z);
+
     }
 
     #[task(priority = 1, binds = TIM5, local = [timer, led_pin])]
